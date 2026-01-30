@@ -29,7 +29,7 @@ class Command(BaseCommand):
             self.stdout.write("Добавлены категории: Мужское, Женское")
 
         men = cat_coll.find_one({"slug": "muzhskoe"})
-        women = cat_coll.find_one({"slug": "zhenskoe"])
+        women = cat_coll.find_one({"slug": "zhenskoe"})
         if not men or not women:
             self.stdout.write(self.style.ERROR("Категории не найдены."))
             return
