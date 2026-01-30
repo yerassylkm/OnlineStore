@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — Онлайн Магазин{% endblock %}
+
+{% block content %}
+<div class="row py-4">
+    <div class="col-md-5">
+        {% if product.image_url %}
+        <img src="{{ product.image_url }}" class="img-fluid rounded shadow" alt="{{ product.name }}" style="max-height: 500px; object-fit: contain;">
+        {% else %}
+        <div class="bg-light rounded d-flex align-items-center justify-content-center shadow" style="height: 400px;">Нет фото</div>
+        {% endif %}
+    </div>
+    <div class="col-md-7">
+        <h1>{{ product.name }}</h1>
+        <p class="text-muted">Артикул: {{ product.sku }}</p>
+        <p class="fs-4 fw-bold text-primary">{{ product.price }} ₽</p>
+        {% if product.description %}
+        <p class="mt-3">{{ product.description }}</p>
+        {% endif %}
+        {% if product.material %}
+        <p><strong>Материал:</strong> {{ product.material }}</p>
+        {% endif %}
+
+        <hr class="my-4">
+
+        {% if product.variants %}
+        <form action="{% if product.variants %}{% url 'orders:cart_add' product.variants.0.id %}{% else %}#{% endif %}" method="get" id="add-to-cart-form" class="mt-4">
+            <div class="mb-3">
+                <label class="form-label">Размер / Цвет</label>
+                <select name="variant_id" id="variant-select" class="form-select w-50" required>
+                    {% for v in product.variants %}
+                    <option value="{{ v.id }}" {% if v.quantity < 1 %}disabled{% endif %}>
+                        {{ v.size }} — {{ v.color }}{% if v.quantity >= 1 %} (в наличии {{ v.quantity }} шт.){% else %} — нет в наличии{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if current_user %}
+            <button type="submit" class="btn btn-success btn-lg shadow">Добавить в корзину</button>
+            {% else %}
+            <p class="text-warning">Чтобы добавить в корзину, <a href="{% url 'users:login' %}?next={{ request.path }}">войдите</a> или <a href="{% url 'users:register' %}">зарегистрируйтесь</a>.</p>
+            {% endif %}
+        </form>
+        <script>
+        (function(){
+            var form = document.getElementById('add-to-cart-form');
+            var sel = document.getElementById('variant-select');
+            if (form && sel) {
+                function updateAction(){ form.action = '/cart/add/' + sel.value + '/'; }
+                updateAction();
+                sel.addEventListener('change', updateAction);
+            }
+        })();
+        </script>
+        {% else %}
+        <p class="text-muted">Нет доступных вариантов.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

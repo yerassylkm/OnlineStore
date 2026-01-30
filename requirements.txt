@@ -1,0 +1,5 @@
+Django>=5.0
+pymongo>=4.6
+dnspython>=2.4
+stripe>=7.0
+Pillow>=10.0

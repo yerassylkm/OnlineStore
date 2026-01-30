@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Результат оплаты — Онлайн Магазин{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    {% if success %}
+    <div class="alert alert-success">
+        <h4>Оплата прошла успешно</h4>
+        <p>Спасибо за заказ!</p>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        <h4>Оплата отменена или не завершена</h4>
+        <p>Вы можете оформить заказ снова из <a href="{% url 'profile' %}">личного кабинета</a>.</p>
+    </div>
+    {% endif %}
+
+    {% if order %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">Заказ</div>
+        <div class="card-body">
+            <p><strong>Статус заказа:</strong> {{ order.status }}</p>
+            <p><strong>Сумма:</strong> {{ order.total_price }} ₽</p>
+            <p><strong>Дата:</strong> {{ order.created_at_str }}</p>
+            {% if payment %}
+            <p><strong>Статус оплаты:</strong> {{ payment.payment_status }}</p>
+            <p><strong>Платёжная система:</strong> {{ payment.payment_system }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'store:main' %}" class="btn btn-primary">На главную</a>
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary ms-2">Личный кабинет</a>
+    </div>
+</div>
+{% endblock %}
